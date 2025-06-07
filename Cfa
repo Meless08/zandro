@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Compteur d'argent</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      font-weight: 700;
+      margin-bottom: 40px;
+      color: #fff;
+      text-shadow: 1px 1px 5px rgba(0,0,0,0.3);
+      letter-spacing: 2px;
+      font-size: 2.5rem;
+      text-align: center;
+    }
+    #counter {
+      font-size: 4em;
+      color: #2ecc71;
+      background: #fff;
+      padding: 20px 60px;
+      border-radius: 20px;
+      box-shadow: 0 8px 15px rgba(46, 204, 113, 0.3);
+      transition: color 0.3s ease;
+      user-select: none;
+      animation: pulse 2s infinite;
+      margin-bottom: 40px;
+      min-width: 220px;
+      text-align: center;
+      word-wrap: break-word;
+    }
+    @keyframes pulse {
+      0%, 100% {
+        color: #2ecc71;
+        text-shadow: 0 0 10px #27ae60;
+      }
+      50% {
+        color: #27ae60;
+        text-shadow: 0 0 20px #2ecc71;
+      }
+    }
+    button {
+      background: #2980b9;
+      border: none;
+      color: white;
+      font-size: 1.3em;
+      padding: 15px 50px;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 5px 12px rgba(41, 128, 185, 0.4);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+      max-width: 90vw;
+      word-wrap: break-word;
+    }
+    button:hover {
+      background: #3498db;
+      box-shadow: 0 7px 20px rgba(52, 152, 219, 0.6);
+    }
+    button:active {
+      background: #1c5980;
+      box-shadow: 0 3px 8px rgba(28, 89, 128, 0.6);
+    }
+
+    /* Responsive mobile */
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+        height: auto;
+        min-height: 100vh;
+      }
+      h1 {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+      }
+      #counter {
+        font-size: 2.5em;
+        padding: 15px 30px;
+        min-width: auto;
+        max-width: 90vw;
+        margin-bottom: 30px;
+      }
+      button {
+        font-size: 1.1em;
+        padding: 12px 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Compteur d'argent</h1>
+  <div id="counter">15 000 F</div>
+  <button id="captureBtn">Capturer le montant</button>
+
+  <script>
+    const montantInitial = 15000;
+    const dateDebut = new Date(new Date().getFullYear(), new Date().getMonth(), 5);
+    const dateFin = new Date(dateDebut);
+    dateFin.setDate(dateDebut.getDate() + 30);
+
+    const secondesTotales = (dateFin - dateDebut) / 1000;
+    const valeurParSeconde = montantInitial / secondesTotales;
+
+    function formatMontant(montant) {
+      return montant.toFixed(2)
+        .replace('.', ',')
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' F';
+    }
+
+    function updateCounter() {
+      const maintenant = new Date();
+      let secondesEcoulees = (maintenant - dateDebut) / 1000;
+
+      if (secondesEcoulees < 0) secondesEcoulees = 0;
+      if (secondesEcoulees > secondesTotales) secondesEcoulees = secondesTotales;
+
+      const montantRestant = montantInitial - (valeurParSeconde * secondesEcoulees);
+      const affichage = montantRestant <= 0 ? "0,00 F" : formatMontant(montantRestant);
+      document.getElementById("counter").textContent = affichage;
+    }
+
+    function capturerMontant() {
+      const montantTexte = document.getElementById("counter").textContent;
+      alert("Montant capturé : " + montantTexte);
+    }
+
+    document.getElementById("captureBtn").addEventListener("click", capturerMontant);
+
+    setInterval(updateCounter, 1000);
+    updateCounter();
+  </script>
+</body>
+</html>
